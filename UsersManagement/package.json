@@ -1,0 +1,24 @@
+{
+  "name": "usersmanagement",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "config": "^3.0.1",
+    "express": "^4.16.4",
+    "module-alias": "^2.1.0",
+    "moment": "^2.23.0"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@routes": "src/routes",
+    "@services": "src/services",
+    "@errors": "src/errors"
+  }
+}
