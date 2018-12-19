@@ -21,12 +21,14 @@ namespace OrdersManagement.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<OrderDTO>> Get()
         {
+            Console.Out.WriteLine($"{DateTime.UtcNow:u} List of orders");
             return Orders.ToList();
         }
 
         [HttpGet("{id}")]
         public ActionResult<OrderDTO> Get(long id)
         {
+            Console.Out.WriteLine($"{DateTime.UtcNow:u} Get order with id {id}");
             return Orders.First(x => x.Id == id);
         }
     }
