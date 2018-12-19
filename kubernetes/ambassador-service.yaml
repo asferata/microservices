@@ -1,0 +1,35 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: ambassador
+  name: ambassador
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v0
+      kind:  Mapping
+      name:  shopfront
+      prefix: /shopfront/
+      service: shopfront:8010
+      ---
+      apiVersion: ambassador/v0
+      kind:  Mapping
+      name:  usersmanagement
+      prefix: /usersmanagement/
+      service: usersmanagement:8030
+      ---
+      apiVersion: ambassador/v0
+      kind:  Mapping
+      name:  ordersmanagement
+      prefix: /ordersmanagement/
+      service: ordersmanagement:8020
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  ports:
+  - name: ambassador
+    port: 80
+  selector:
+    service: ambassador

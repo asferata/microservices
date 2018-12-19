@@ -1,0 +1,2 @@
+seq 50 | parallel -j0 --joblog log curl -s curl -v http://192.168.99.101:32323/shopfront/api/values ">" {}.txt
+cut -f 4 log

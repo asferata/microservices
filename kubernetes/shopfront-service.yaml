@@ -1,0 +1,39 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shopfront
+  labels:
+    app: shopfront
+spec:
+  type: ClusterIP
+  selector:
+    app: shopfront
+  ports:
+  - protocol: TCP
+    port: 8010
+    name: http
+
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: shopfront
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: shopfront
+    spec:
+      containers:
+      - name: shopfront
+        image: mnemonika/test:shopfront
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8010
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 8010
+          timeoutSeconds: 1

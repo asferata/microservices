@@ -1,0 +1,39 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: usersmanagement
+  labels:
+    app: usersmanagement
+spec:
+  type: ClusterIP
+  selector:
+    app: usersmanagement
+  ports:
+  - protocol: TCP
+    port: 8030
+    name: http
+
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: usersmanagement
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: usersmanagement
+    spec:
+      containers:
+      - name: usersmanagement
+        image: mnemonika/test:usersmanagement
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8030
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 8030
+          timeoutSeconds: 1
