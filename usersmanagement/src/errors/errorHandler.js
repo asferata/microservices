@@ -17,7 +17,6 @@ const handle = (err, res) => {
 
 const ErrorHandler = {
     handle,
-    print,
     printConsole
 };
 
