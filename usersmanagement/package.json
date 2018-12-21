@@ -13,12 +13,23 @@
     "config": "^3.0.1",
     "express": "^4.16.4",
     "module-alias": "^2.1.0",
-    "moment": "^2.23.0"
+    "moment": "^2.23.0",
+    "mongoose": "^5.2.14"
   },
   "_moduleAliases": {
     "@root": ".",
     "@routes": "src/routes",
     "@services": "src/services",
-    "@errors": "src/errors"
+    "@middlewares": "src/middlewares",
+    "@models": "src/models",
+    "@dataValidation": "src/models/validation",
+    "@errors": "src/errors",
+    "@dataErrors": "src/models/errors",
+    "@serviceErrors": "src/services/errors",
+    "@validationErrors": "src/validation/errors",
+    "@validation": "src/validation",
+    "@auth": "src/auth",
+    "@utils": "src/utils",
+    "@schemas": "src/schemas"
   }
 }
