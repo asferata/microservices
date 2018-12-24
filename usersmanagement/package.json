@@ -33,6 +33,7 @@
     "@validation": "src/validation",
     "@auth": "src/auth",
     "@utils": "src/utils",
-    "@schemas": "src/schemas"
+    "@schemas": "src/schemas",
+    "@config": "config"
   }
 }

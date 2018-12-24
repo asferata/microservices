@@ -35,19 +35,19 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongo
+  name: mongodb
   labels:
-    app: mongo
+    app: mongodb
 spec:
-  serviceName: "mongo"
+  serviceName: "mongodb"
   replicas: 1
   selector:
     matchLabels:
-      app: mongo
+      app: mongodb
   template:
     metadata:
       labels:
-        app: mongo
+        app: mongodb
     spec:
       terminationGracePeriodSeconds: 10
       volumes:
@@ -55,7 +55,7 @@ spec:
         persistentVolumeClaim:
           claimName: mongo-data-claim
       containers:
-        - name: mongo
+        - name: mongodb
           image: mongo:latest
           ports:
             - containerPort: 27017
@@ -84,12 +84,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo
+  name: mongodb
   labels:
-    name: mongo
+    name: mongodb
 spec:
   selector:
-    app: mongo
+    app: mongodb
   ports:
   - port: 27017
     protocol: TCP

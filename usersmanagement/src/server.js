@@ -4,13 +4,15 @@ require('module-alias/register');
 
 const mongoose = require('mongoose');
 const express = require('express');
-const config = require('config');
-const mongoConfig = config.get('mongodb');
+// const config = require('config');
+const mongodbConfig = require('@config/default');
+//const mongoConfig = config.get('mongodb');
 const bodyParser = require('body-parser');
 const routes = require('@routes/');
 const {ErrorHandler} = require('@errors/');
 
-mongoose.connect(mongoConfig.connectionString, {useNewUrlParser: true});
+// mongoose.connect(mongoConfig.connectionString, {useNewUrlParser: true});
+mongoose.connect(mongodbConfig.connectionString, {useNewUrlParser: true});
 
 let app = express();
 
