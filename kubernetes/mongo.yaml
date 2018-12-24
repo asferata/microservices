@@ -65,6 +65,8 @@ spec:
             - name: mongo-data-storage
               mountPath: /data/db
           env:
+            - name: MONGO_HOST
+              value: mongodb
             - name: MONGO_INITDB_DATABASE
               valueFrom:
                 configMapKeyRef:
