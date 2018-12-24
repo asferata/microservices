@@ -1,5 +1,6 @@
 {
   "mongodb": {
-    "connectionString": "mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb/${MONGO_DATABASE}"
+    "connectionString": "mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb/${MONGO_DATABASE}",
+    "connectionStringSSS": "mongodb://natalie:qwerty123@192.168.99.101:30017/admin"
   }
 }

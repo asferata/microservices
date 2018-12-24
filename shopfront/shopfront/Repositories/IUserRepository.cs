@@ -7,6 +7,6 @@ namespace ShopFront.Repositories
     public interface IUserRepository
     {
         Task<List<UserDTO>> List();
-        Task<UserDTO> Get(long id);
+        Task<UserDTO> Get(string id);
     }
 }

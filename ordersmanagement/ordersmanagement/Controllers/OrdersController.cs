@@ -12,10 +12,10 @@ namespace OrdersManagement.Controllers
     public class OrdersController : ControllerBase
     {
         private List<OrderDTO> Orders = new List<OrderDTO> {
-            new OrderDTO { Id = 1, UserId = 101, Title = "New Year's Presents", Amount = 1056.45m},
-            new OrderDTO { Id = 2, UserId = 202, Title = "Table", Amount = 498.21m},
-            new OrderDTO { Id = 3, UserId = 303, Title = "Chair", Amount = 381.02m},
-            new OrderDTO { Id = 4, UserId = 404, Title = "Shoes", Amount = 160.45m}
+            new OrderDTO { Id = 1, UserId = "101", Title = "New Year's Presents", Amount = 1056.45m},
+            new OrderDTO { Id = 2, UserId = "202", Title = "Table", Amount = 498.21m},
+            new OrderDTO { Id = 3, UserId = "5c20cf2275330c7821d6237c", Title = "Chair", Amount = 381.02m},
+            new OrderDTO { Id = 4, UserId = "5c20cf3b75330c7821d6237d", Title = "Shoes", Amount = 160.45m}
         };
 
         [HttpGet]

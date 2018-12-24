@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -23,10 +24,19 @@ namespace ShopFront.Repositories
             return JsonConvert.DeserializeObject<List<UserDTO>>(result);
         }
         
-        public async Task<UserDTO> Get(long id)
+        public async Task<UserDTO> Get(string id)
         {
-            var result = await httpClient.GetStringAsync($"http://{_services.UsersManagement}/api/Users/{id}");
-            return JsonConvert.DeserializeObject<UserDTO>(result);
+            try
+            {
+                var result = await httpClient.GetStringAsync($"http://{_services.UsersManagement}/api/Users/{id}");
+                return JsonConvert.DeserializeObject<UserDTO>(result);
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine("Exception during getting user with id " + id);
+                Console.Out.WriteLine(e);
+                return null;
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ const print = message => {
 
 const list = async () => {
     print('Get list of users');
-    await User.list();
+    return await User.list();
 };
 
 const get = async (id, keysToPopulate) => {

@@ -32,23 +32,6 @@ spec:
     requests:
       storage: 1Gi
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongo
-  labels:
-    name: mongo
-spec:
-  selector:
-    app: mongo
-  ports:
-  - port: 27017
-    name: db
-    targetPort: 27017
-    protocol: TCP
-    nodePort: 30017
-  type: NodePort
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -73,16 +56,7 @@ spec:
           claimName: mongo-data-claim
       containers:
         - name: mongo
-          image: mongo
-          command:
-            - mongod
-            - "--auth"
-            - "--replSet"
-            - "rs0"
-            - "--smallfiles"
-            - "--noprealloc"
-            - "--bind_ip"
-            - "0.0.0.0"
+          image: mongo:latest
           ports:
             - containerPort: 27017
               hostPort: 27017
@@ -106,10 +80,19 @@ spec:
                 secretKeyRef:
                   name: mongodb
                   key: database-password
-        - name: mongo-sidecar
-          image: cvallance/mongo-k8s-sidecar
-          env:
-            - name: MONGO_SIDECAR_POD_LABELS
-              value: "app=mongo"
 ---
-
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  labels:
+    name: mongo
+spec:
+  selector:
+    app: mongo
+  ports:
+  - port: 27017
+    protocol: TCP
+    nodePort: 30017
+  type: NodePort
+---

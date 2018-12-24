@@ -5,6 +5,7 @@ require('module-alias/register');
 const mongoose = require('mongoose');
 const express = require('express');
 const config = require('config');
+const mongoConfig = config.get('mongodb');
 const bodyParser = require('body-parser');
 const routes = require('@routes/');
 const {ErrorHandler} = require('@errors/');
