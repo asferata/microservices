@@ -37,3 +37,23 @@ spec:
             path: /healthcheck
             port: 8020
           timeoutSeconds: 1
+        env:
+          - name: POSTGRES_HOST
+            value: postgres
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                name: postgres
+                key: database-name
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: postgres
+                key: database-user
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres
+                key: database-password
+          - name: PostgresqlConnection
+            value: "User ID=$(POSTGRES_USER);Password=$(POSTGRES_PASSWORD);Host=$(POSTGRES_HOST);Port=5432;Database=$(POSTGRES_DB)"
