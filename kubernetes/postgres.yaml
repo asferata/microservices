@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: mongo-data-volume
+  name: postgres-data-volume
 spec:
   capacity:
     storage: 3Gi
@@ -11,12 +11,12 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   hostPath:
-    path: /mnt/disks/mongodb
+    path: /mnt/disks/postgres
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: mongo-data-claim
+  name: postgres-data-claim
 spec:
   storageClassName: local-storage
   accessModes:
@@ -28,66 +28,64 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb
+  name: postgres
   labels:
-    app: mongodb
+    app: postgres
 spec:
-  serviceName: "mongodb"
+  serviceName: "postgres"
   replicas: 1
   selector:
     matchLabels:
-      app: mongodb
+      app: postgres
   template:
     metadata:
       labels:
-        app: mongodb
+        app: postgres
     spec:
       terminationGracePeriodSeconds: 10
       volumes:
-      - name: mongo-data-storage
+      - name: postgres-data-storage
         persistentVolumeClaim:
-          claimName: mongo-data-claim
+          claimName: postgres-data-claim
       containers:
-        - name: mongodb
-          image: mongo:latest
+        - name: postgres
+          image: postgres:latest
           ports:
-            - containerPort: 27017
-              hostPort: 27017
-              protocol: TCP
+            - containerPort: 5432
+              hostPort: 5432
           volumeMounts:
-            - name: mongo-data-storage
-              mountPath: /data/db
+            - name: postgres-data-storage
+              mountPath: /var/lib/postgresql/data
           env:
-            - name: MONGO_HOST
-              value: mongodb
-            - name: MONGO_INITDB_DATABASE
+            - name: POSTGRES_HOST
+              value: postgres
+            - name: POSTGRES_DB
               valueFrom:
                 configMapKeyRef:
-                  name: mongodb
+                  name: postgres
                   key: database-name
-            - name: MONGO_INITDB_ROOT_USERNAME
+            - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: mongodb
+                  name: postgres
                   key: database-user
-            - name: MONGO_INITDB_ROOT_PASSWORD
+            - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mongodb
+                  name: postgres
                   key: database-password
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb
+  name: postgres
   labels:
-    name: mongodb
+    name: postgres
 spec:
   selector:
-    app: mongodb
+    app: postgres
   ports:
-  - port: 27017
-    protocol: TCP
-    nodePort: 30017
+  - port: 5432
+    nodePort: 30432
   type: NodePort
 ---
