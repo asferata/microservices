@@ -7,7 +7,7 @@ namespace BL.Interfaces.Orders
 {
     public interface IOrderService
     {
-        Task<List<OrderDto>> GetOrders();
-        Task<OrderDto> GetOrder(int orderId);
+        Task<List<OrderDto>> GetOrdersAsync();
+        Task<OrderDto> GetOrderAsync(int orderId);
     }
 }

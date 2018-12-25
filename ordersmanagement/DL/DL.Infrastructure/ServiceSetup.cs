@@ -1,7 +1,10 @@
 ﻿using DL.Context;
+using DL.Entities;
 using DL.Interfaces.DbContext;
+using DL.Interfaces.Repository;
 using DL.Interfaces.UnitOfWork;
 using DL.Migrations;
+using DL.Repositories;
 using DL.Util;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -41,6 +44,7 @@ namespace DL.Infrastructure
         {
             _services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
             _services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+            _services.AddScoped<IRepository<Order>, Repository<Order>>();
         }
     }
 }

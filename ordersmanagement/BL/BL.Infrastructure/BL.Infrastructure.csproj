@@ -13,6 +13,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\DL\DL.Infrastructure\DL.Infrastructure.csproj" />
     <ProjectReference Include="..\BL.DtoModels\BL.DtoModels.csproj" />
+    <ProjectReference Include="..\BL.Interfaces\BL.Interfaces.csproj" />
+    <ProjectReference Include="..\BL.Orders\BL.Orders.csproj" />
   </ItemGroup>
 
 </Project>

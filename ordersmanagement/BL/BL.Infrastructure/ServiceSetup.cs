@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using Microsoft.Extensions.Configuration;
+﻿using BL.Interfaces.Orders;
+using BL.Orders;
 using DL.Infrastructure;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BL.Infrastructure
 {
@@ -18,6 +19,7 @@ namespace BL.Infrastructure
 
         private static void RegisterServices()
         {
+            _services.AddScoped<IOrderService, OrderService>();
         }
     }
 }

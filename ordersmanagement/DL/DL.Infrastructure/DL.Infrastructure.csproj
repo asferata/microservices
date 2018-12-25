@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DL.Context\DL.Context.csproj" />
     <ProjectReference Include="..\DL.Migrations\DL.Migrations.csproj" />
+    <ProjectReference Include="..\DL.Repositories\DL.Repositories.csproj" />
     <ProjectReference Include="..\DL.UnitOfWork\DL.UnitOfWork.csproj" />
     <ProjectReference Include="..\DL.Util\DL.Util.csproj" />
   </ItemGroup>
