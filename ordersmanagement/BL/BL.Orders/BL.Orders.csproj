@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Util\Util.csproj" />
+    <ProjectReference Include="..\..\DL\DL.Entities\DL.Entities.csproj" />
+    <ProjectReference Include="..\..\DL\DL.Interfaces\DL.Interfaces.csproj" />
+    <ProjectReference Include="..\..\DL\DL.Util\DL.Util.csproj" />
+    <ProjectReference Include="..\BL.Interfaces\BL.Interfaces.csproj" />
+    <ProjectReference Include="..\BL.Util\BL.Util.csproj" />
+  </ItemGroup>
+
+</Project>
