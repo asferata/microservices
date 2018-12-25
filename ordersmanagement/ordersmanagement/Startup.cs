@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,13 +23,14 @@ namespace OrdersManagement
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddVersionedApiExplorer(SetupApiExplorerOptions);
+            services.AddApiVersioning(SetupApiVersioningOptions);
             services.AddMvcCore().AddJsonOptions(SetupJsonOptions);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddAutoMapper();
             services.RegisterBusinessServices(Configuration);
         }
         
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, AutoMapper.IConfigurationProvider autoMapper)
         {
             if (env.IsDevelopment())
             {
@@ -38,8 +40,8 @@ namespace OrdersManagement
             {
                 app.UseHsts();
             }
-
-//            app.UseHttpsRedirection();
+            //            app.UseHttpsRedirection();
+            autoMapper.AssertConfigurationIsValid();
             app.UseMvc();
         }
 
@@ -51,6 +53,12 @@ namespace OrdersManagement
         private static void SetupJsonOptions(MvcJsonOptions jsonOptions)
         {
             jsonOptions.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+        }
+        private static void SetupApiVersioningOptions(ApiVersioningOptions options)
+        {
+            options.ReportApiVersions = true;
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.DefaultApiVersion = new ApiVersion(1, 0);
         }
     }
 }
