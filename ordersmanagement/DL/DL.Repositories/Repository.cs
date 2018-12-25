@@ -17,7 +17,7 @@ namespace DL.Repositories
         {
             _dbContext = context;
         }
-        public async Task<TEntity> GetByIdAsync(int id)
+        public async Task<TEntity> GetByIdAsync(long id)
         {
             return await _dbContext.Set<TEntity>().FirstOrDefaultAsync(entity => entity.Id == id).ConfigureAwait(false) ??
                    throw new EntityNotFoundException();

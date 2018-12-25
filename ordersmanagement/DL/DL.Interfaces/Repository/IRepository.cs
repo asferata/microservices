@@ -8,7 +8,7 @@ namespace DL.Interfaces.Repository
 {
     public interface IRepository<TEntity> where TEntity: BaseEntity
     {
-        Task<TEntity> GetByIdAsync(int id);
+        Task<TEntity> GetByIdAsync(long id);
         Task<List<TEntity>> ListAsync();
     }
 }

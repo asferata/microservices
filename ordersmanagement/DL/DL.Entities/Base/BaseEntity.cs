@@ -8,7 +8,7 @@ namespace DL.Entities.Base
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public int Id { set; get; }
+        public long Id { set; get; }
         public DateTime CreateDate { set; get; }
         public DateTime? UpdateDate { set; get; }
     }

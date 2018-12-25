@@ -1,8 +1,11 @@
-﻿using BL.Infrastructure;
+﻿using AutoMapper;
+using BL.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace OrdersManagement
@@ -18,10 +21,13 @@ namespace OrdersManagement
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddVersionedApiExplorer(SetupApiExplorerOptions);
+            services.AddMvcCore().AddJsonOptions(SetupJsonOptions);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddAutoMapper();
             services.RegisterBusinessServices(Configuration);
         }
-
+        
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -35,6 +41,16 @@ namespace OrdersManagement
 
 //            app.UseHttpsRedirection();
             app.UseMvc();
+        }
+
+        private static void SetupApiExplorerOptions(ApiExplorerOptions options)
+        {
+            options.GroupNameFormat = "'v'VVV";
+            options.SubstituteApiVersionInUrl = true;
+        }
+        private static void SetupJsonOptions(MvcJsonOptions jsonOptions)
+        {
+            jsonOptions.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
         }
     }
 }

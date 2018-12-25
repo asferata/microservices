@@ -31,13 +31,13 @@ namespace BL.Orders
             return _mapper.Map<List<OrderDto>>(orders);
         }
 
-        public async Task<OrderDto> GetOrderAsync(int orderId)
+        public async Task<OrderDto> GetOrderAsync(long orderId)
         {
             var order = await LoadOrderByIdAsync(orderId).ConfigureAwait(false);
             return _mapper.Map<OrderDto>(order);
         }
 
-        private async Task<Order> LoadOrderByIdAsync(int orderId)
+        private async Task<Order> LoadOrderByIdAsync(long orderId)
         {
             try
             {
