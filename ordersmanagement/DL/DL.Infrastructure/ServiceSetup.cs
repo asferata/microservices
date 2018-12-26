@@ -9,6 +9,7 @@ using DL.Util;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Util;
 
 namespace DL.Infrastructure
 {
@@ -20,13 +21,16 @@ namespace DL.Infrastructure
         {
             _services = services;
             SetupEntityFramework(configuration);
-            MigrateDatabase(); // можно убрать, или выполнять только при условии environment != development
+            MigrateDatabase();
             RegisterServices();
         }
 
         private static void SetupEntityFramework(IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString(ConnectionStringNames.Postgresql);
+            _services.AddHealthChecks()
+                .AddDbContextCheck<ApplicationDbContext>();
+
+            var connectionString = configuration.GetConnectionString(AppConstants.ConnectionStringNames.Postgresql);
             _services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseNpgsql(connectionString,
