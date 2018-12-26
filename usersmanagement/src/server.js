@@ -17,7 +17,7 @@ mongoose.connect(mongodbConfig.connectionString, {useNewUrlParser: true});
 let app = express();
 
 app.use(bodyParser.json());
-app.use('/api/users', routes.Users);
+app.use('/api/v1/users', routes.Users);
 
 app.use('/healthcheck', function (req, res) {
     res.status(200).json("It's alive");

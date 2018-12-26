@@ -55,5 +55,5 @@ spec:
               secretKeyRef:
                 name: postgres
                 key: database-password
-          - name: PostgresqlConnection
-            value: "User ID=$(POSTGRES_USER);Password=$(POSTGRES_PASSWORD);Host=$(POSTGRES_HOST);Port=5432;Database=$(POSTGRES_DB)"
+          - name: ConnectionStrings__PostgresqlConnection
+            value: "Username=$(POSTGRES_USER);Password=$(POSTGRES_PASSWORD);Host=$(POSTGRES_HOST);Port=5432;Database=$(POSTGRES_DB)"

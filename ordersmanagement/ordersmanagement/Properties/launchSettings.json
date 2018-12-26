@@ -20,9 +20,10 @@
     "OrdersManagement": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/orders",
+      "launchUrl": "api/v1/orders",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__PostgresqlConnection": "Username=natalie;Password=qwerty123;Database=admin;Host=192.168.99.101;Port=30432"
       },
       "applicationUrl": "http://localhost:8020"
     }

@@ -20,7 +20,7 @@ namespace ShopFront.Repositories
 
         public async Task<List<UserDTO>> List()
         {
-            var result = await httpClient.GetStringAsync($"http://{_services.UsersManagement}/api/Users");
+            var result = await httpClient.GetStringAsync($"http://{_services.UsersManagement}/api/v1/Users");
             return JsonConvert.DeserializeObject<List<UserDTO>>(result);
         }
         
@@ -28,7 +28,7 @@ namespace ShopFront.Repositories
         {
             try
             {
-                var result = await httpClient.GetStringAsync($"http://{_services.UsersManagement}/api/Users/{id}");
+                var result = await httpClient.GetStringAsync($"http://{_services.UsersManagement}/api/v1/Users/{id}");
                 return JsonConvert.DeserializeObject<UserDTO>(result);
             }
             catch (Exception e)
