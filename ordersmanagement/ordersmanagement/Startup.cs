@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
+using OrdersManagement.Middlewares.ExceptionHandler;
 
 namespace OrdersManagement
 {
@@ -41,6 +42,7 @@ namespace OrdersManagement
                 app.UseHsts();
             }
             //            app.UseHttpsRedirection();
+            app.UseCustomExceptionHandler();
             autoMapper.AssertConfigurationIsValid();
             app.UseMvc();
         }

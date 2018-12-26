@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BL.Interfaces.Orders;
+using BL.Util.Exceptions;
+using OrdersManagement.RespionseExceptions;
 
 namespace OrdersManagement.Controllers
 {
@@ -23,8 +25,16 @@ namespace OrdersManagement.Controllers
         [HttpGet]
         public async Task<ActionResult> Get()
         {
-            var result = await _orderService.GetOrdersAsync().ConfigureAwait(false);
-            return new OkObjectResult(result);
+            try
+            {
+                var result = await _orderService.GetOrdersAsync().ConfigureAwait(false);
+                return new OkObjectResult(result);
+            }
+            catch (NoDataException ex)
+            {
+                throw new NotFoundException(ex.Errors);
+            }
+            
         }
 
         [HttpGet("{id}")]
