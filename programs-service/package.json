@@ -1,0 +1,40 @@
+{
+  "name": "programs-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ajv": "^6.5.3",
+    "ajv-async": "^1.0.1",
+    "ajv-errors": "^1.0.0",
+    "body-parser": "^1.18.3",
+    "config": "^3.0.1",
+    "express": "^4.16.4",
+    "module-alias": "^2.1.0",
+    "moment": "^2.23.0",
+    "mongoose": "^5.2.14"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@routes": "src/routes",
+    "@services": "src/services",
+    "@middlewares": "src/middlewares",
+    "@models": "src/models",
+    "@dataValidation": "src/models/validation",
+    "@errors": "src/errors",
+    "@dataErrors": "src/models/errors",
+    "@serviceErrors": "src/services/errors",
+    "@validationErrors": "src/validation/errors",
+    "@validation": "src/validation",
+    "@auth": "src/auth",
+    "@utils": "src/utils",
+    "@schemas": "src/schemas",
+    "@config": "config",
+    "@data": "data"
+  }
+}

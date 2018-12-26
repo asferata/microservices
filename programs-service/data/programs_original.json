@@ -1,0 +1,106 @@
+[
+  {
+    "id": "aa11",
+    "title": "Abs",
+    "exercises": [
+      {
+        "id": "aa11e1",
+        "title": "Sit-up",
+        "comment": "",
+        "iterations": [
+          {
+            "order": 1,
+            "tags": {
+              "count": 20,
+              "time": "1min"
+            }
+          },
+          {
+            "order": 2,
+            "tags": {
+              "count": 25,
+              "time": "1min"
+            }
+          },
+          {
+            "order": 3,
+            "tags": {
+              "count": 30,
+              "time": "1min"
+            }
+          }
+        ]
+      },
+      {
+        "id": "aa11e2",
+        "title": "Russian twist",
+        "comment": "",
+        "iterations": [
+          {
+            "order": 1,
+            "tags": {
+              "count": 40,
+              "time": "30s"
+            }
+          },
+          {
+            "order": 2,
+            "tags": {
+              "count": 50,
+              "time": "30s"
+            }
+          }
+        ]
+      },
+      {
+        "id": "aa11e3",
+        "title": "Crunch",
+        "comment": "",
+        "iterations": [
+          {
+            "order": 1,
+            "tags": {
+              "count": 40,
+              "time": "1min"
+            }
+          },
+          {
+            "order": 2,
+            "tags": {
+              "count": 60,
+              "time": "1min"
+            }
+          }
+        ]
+      },
+      {
+        "id": "aa11e4",
+        "title": "Leg raise",
+        "comment": "",
+        "iterations": [
+          {
+            "order": 1,
+            "tags": {
+              "count": 20,
+              "time": "1min"
+            }
+          },
+          {
+            "order": 2,
+            "tags": {
+              "count": 30,
+              "time": "1min"
+            }
+          },
+          {
+            "order": 3,
+            "tags": {
+              "count": 40,
+              "time": "1min"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
