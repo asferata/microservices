@@ -19,13 +19,13 @@ namespace ShopFront.Repositories
 
         public async Task<List<SimpleOrderDTO>> List()
         {
-            var result = await httpClient.GetStringAsync($"http://{_services.OrdersManagement}/api/Orders");
+            var result = await httpClient.GetStringAsync($"http://{_services.OrdersManagement}/api/v1/Orders");
             return JsonConvert.DeserializeObject<List<SimpleOrderDTO>>(result);
         }
         
         public async Task<SimpleOrderDTO> Get(long id)
         {
-            var result = await httpClient.GetStringAsync($"http://{_services.OrdersManagement}/api/Orders/{id}");
+            var result = await httpClient.GetStringAsync($"http://{_services.OrdersManagement}/api/v1/Orders/{id}");
             return JsonConvert.DeserializeObject<SimpleOrderDTO>(result);
         }
     }
