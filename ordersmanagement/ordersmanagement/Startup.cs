@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Util;
 
 namespace OrdersManagement
 {
@@ -28,10 +29,13 @@ namespace OrdersManagement
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddAutoMapper();
             services.RegisterBusinessServices(Configuration);
+            services.AddHealthChecks()
+                .AddNpgSql(Configuration.GetConnectionString(AppConstants.ConnectionStringNames.Postgresql));
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, AutoMapper.IConfigurationProvider autoMapper)
         {
+            app.UseHealthChecks("/healthcheck");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

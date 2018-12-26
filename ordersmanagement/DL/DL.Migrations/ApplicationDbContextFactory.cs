@@ -13,7 +13,7 @@ namespace DL.Migrations
         public ApplicationDbContext CreateDbContext(string[] args)
         {
             var configuration = SetupConfigurationRoot();
-            var connectionString = configuration.GetConnectionString(ConnectionStringNames.Postgresql);
+            var connectionString = configuration.GetConnectionString(AppConstants.ConnectionStringNames.Postgresql);
             var dbContextOptions = SetupDbContextOptions(connectionString);
             return new ApplicationDbContext(dbContextOptions);
         }
