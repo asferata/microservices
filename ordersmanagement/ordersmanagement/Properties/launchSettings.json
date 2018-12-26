@@ -22,8 +22,7 @@
       "launchBrowser": true,
       "launchUrl": "api/v1/orders",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings__PostgresqlConnection": "Username=natalie;Password=qwerty123;Database=admin;Host=192.168.99.101;Port=30432"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://localhost:8020"
     }
