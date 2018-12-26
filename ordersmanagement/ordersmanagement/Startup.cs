@@ -27,11 +27,13 @@ namespace OrdersManagement
             services.AddMvcCore().AddJsonOptions(SetupJsonOptions);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddAutoMapper();
+            services.AddHealthChecks();
             services.RegisterBusinessServices(Configuration);
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, AutoMapper.IConfigurationProvider autoMapper)
         {
+            app.UseHealthChecks("/healthcheck");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
