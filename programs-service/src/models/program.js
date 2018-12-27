@@ -36,7 +36,8 @@ async function update(id, program) {
 const Program = {
     // remove: Validation.withIdValidation(remove),
     list,
-    get: Validation.withIdValidation(get),
+    // get: Validation.withIdValidation(get),
+    get,
     getExercises
     // add,
     // update : Validation.withIdValidation(update),
