@@ -1,4 +1,4 @@
-[
+[program
   {
     "id": "aa11",
     "title": "Abs",
@@ -97,6 +97,25 @@
             "tags": {
               "count": 40,
               "time": "1min"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "aa22",
+    "title": "Abs",
+    "exercises": [
+      {
+        "id": "aa22e1",
+        "title": "Plank",
+        "comment": "",
+        "iterations": [
+          {
+            "order": 1,
+            "tags": {
+              "time": "30s"
             }
           }
         ]

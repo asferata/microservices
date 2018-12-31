@@ -2,6 +2,7 @@ let Program = require('@models/program');
 let {EntityNotFoundError, EntitySaveError} = require('@serviceErrors/');
 const {InvalidIdError} = require('@dataErrors/');
 const moment = require('moment');
+const jsonPatch = require('jsonpatch');
 
 const print = message => {
     const dateTime = moment().format('YYYY-MM-DD HH:mm:ss.SSS Z');
@@ -13,13 +14,9 @@ const list = async () => {
     return await Program.list();
 };
 
-const get = async (id, keysToPopulate) => {
+const get = async (id) => {
     print('Get program with id ' + id);
-    if (Array.isArray(keysToPopulate)) {
-        keysToPopulate = keysToPopulate.map(s => s.trim()).join(' ');
-    }
-
-    let program = await Program.get(id, keysToPopulate);
+    let program = await Program.get(id);
     if (!program) {
         throw new EntityNotFoundError("Program with specified id was not found");
     }
@@ -29,8 +26,7 @@ const get = async (id, keysToPopulate) => {
 
 const getExercises = async (id) => {
     print('Get exercises for program with id ' + id);
-    let exercises = await Program.getExercises(id);
-    return exercises;
+    return Program.getExercises(id);
 };
 
 
@@ -45,7 +41,7 @@ const add = async program => {
 
 const update = async (id, program) => {
     try {
-        await Program.update({_id: id}, {$set: {...program}});
+        await Program.update(id, program);
     }
     catch (e) {
         if(e instanceof InvalidIdError) {
@@ -58,9 +54,11 @@ const update = async (id, program) => {
     return get(id);
 };
 
-const updateProfile = async (id, profile) => {
+const updatePatch = async (id, program) => {
     try {
-        await Program.updateProfile({_id: id}, {...profile});
+        let dbProgram = await get(id);
+        let updatedProgram = jsonPatch.apply_patch(dbProgram, program);
+        await Program.update(id, updatedProgram);
     }
     catch (e) {
         if(e instanceof InvalidIdError) {
@@ -72,6 +70,7 @@ const updateProfile = async (id, profile) => {
 
     return get(id);
 };
+
 
 const remove = async id => {
     let result;
@@ -94,11 +93,11 @@ const remove = async id => {
 const ProgramsService = {
     list,
     get,
-    getExercises
-    // add,
-    // update,
-    // updateProfile,
-    // remove
+    getExercises,
+    add,
+    update,
+    updatePatch,
+    remove
 };
 
 module.exports = ProgramsService;

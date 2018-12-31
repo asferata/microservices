@@ -1,22 +1,31 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
+const baseSchemaOptions = require('./baseSchemaOptions');
 
-const programSchema = new mongoose.Schema({
-    firstName: String,
-    lastName: String,
-    birthDate: Date,
-    email: String,
-    password: String,
-    tasks: [{type: ObjectId, ref: 'Task'}]
-}, { timestamps: true});
+const tagsSchema = new mongoose.Schema({
+    count: String,
+    time: String,
+    distance: String,
+    flection: String,
+    speed: String,
+    weight: String
+}, Object.assign({}, {timestamps: true}, baseSchemaOptions));
 
-programSchema.options.toJSON = {
-    transform: function(doc, ret, options) {
-        ret.id = ret._id;
-        delete ret._id;
-        delete ret.__v;
-        return ret;
-    }
-};
+const iterationSchema = new mongoose.Schema({
+    order: Number,
+    tags: [tagsSchema]
+}, Object.assign({}, {timestamps: true}, baseSchemaOptions));
+
+const exerciseSchema = new mongoose.Schema({
+    title: String,
+    order: Number,
+    iterations: [iterationSchema]
+}, Object.assign({}, {timestamps: true}, baseSchemaOptions));
+
+const programSchema =  new mongoose.Schema(Object.assign({}, {
+    title: String,
+    notes: String,
+    exercises: [exerciseSchema]
+}), Object.assign({}, {timestamps: true}, baseSchemaOptions));
 
 module.exports = mongoose.model('Program', programSchema);

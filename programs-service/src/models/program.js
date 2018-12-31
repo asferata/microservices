@@ -1,6 +1,6 @@
 const {Program: ProgramModel} = require('./mongoose');
 const {Validation} = require('@dataValidation/');
-const json = require('@data/programs');
+//const json = require('@data/programs');
 const _ = require('lodash');
 
 async function remove(id) {
@@ -9,13 +9,13 @@ async function remove(id) {
 }
 
 async function get(id) {
-    let program = json.find(x => x.id === id);
-    return program;
+    let program = await ProgramModel.findById(id);
+    return program.toJSON();
 }
 
 async function getExercises(id) {
-    let exercises = json.filter(x => x.id === id).map(x => x.exercises);
-    return exercises;
+    let program = await get(id);
+    return program ? program.exercises.map(x => x.toJSON()) : [];
 }
 
 // TODO: Natalie - this is wrong. Need to change options
@@ -23,24 +23,30 @@ async function find(options) {
 }
 
 async function list() {
-    const results = json.map(x => _.omit(x, 'exercises'));
-    return results;
+    let programs = await ProgramModel.find();
+    programs = programs.map(x => x.toJSON());
+    return programs.map(x => _.omit(x, 'exercises'));
 }
 
 async function add(program) {
+    let createdProgram = await ProgramModel.create(program);
+    return get(createdProgram.id);
+
 }
 
 async function update(id, program) {
+    await ProgramModel.updateOne({_id: id}, {$set: {...program}});
+    return get(id);
 }
 
 const Program = {
-    // remove: Validation.withIdValidation(remove),
+    remove: Validation.withIdValidation(remove),
     list,
-    // get: Validation.withIdValidation(get),
-    get,
-    getExercises
-    // add,
-    // update : Validation.withIdValidation(update),
+    get: Validation.withIdValidation(get),
+    //get,
+    getExercises: Validation.withIdValidation(getExercises),
+    add,
+    update : Validation.withIdValidation(update),
     // find
 };
 

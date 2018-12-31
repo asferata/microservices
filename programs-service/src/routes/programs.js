@@ -33,7 +33,7 @@ router.get('/:id/exercises', async function (req, res, next) {
     }
 });
 
-/*
+
 
 router.delete('/:id', async function (req, res, next) {
     try {
@@ -45,7 +45,7 @@ router.delete('/:id', async function (req, res, next) {
     }
 });
 
-router.post('/', programValidator, async function (req, res, next) {
+router.post('/', /*programValidator,*/ async function (req, res, next) {
     try {
         let program = await ProgramsService.add(req.body);
         res.status(201).json(program);
@@ -55,7 +55,7 @@ router.post('/', programValidator, async function (req, res, next) {
     }
 });
 
-router.put('/:id', programValidator, async function (req, res, next) {
+router.put('/:id', /*programValidator,*/ async function (req, res, next) {
     try {
         const program = await ProgramsService.update(req.params.id, req.body);
         res.status(200).json(program);
@@ -63,6 +63,16 @@ router.put('/:id', programValidator, async function (req, res, next) {
     catch (e) {
         return next(e);
     }
-});*/
+});
+
+router.patch('/:id', /*programValidator,*/ async function (req, res, next) {
+    try {
+        const program = await ProgramsService.updatePatch(req.params.id, req.body);
+        res.status(200).json(program);
+    }
+    catch (e) {
+        return next(e);
+    }
+});
 
 module.exports = router;

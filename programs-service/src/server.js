@@ -12,7 +12,7 @@ const routes = require('@routes/');
 const {ErrorHandler} = require('@errors/');
 
 // mongoose.connect(mongoConfig.connectionString, {useNewUrlParser: true});
-//mongoose.connect(mongodbConfig.connectionString, {useNewUrlParser: true});
+mongoose.connect(mongodbConfig.connectionString, {useNewUrlParser: true});
 
 let app = express();
 

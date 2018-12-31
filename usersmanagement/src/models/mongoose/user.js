@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const baseSchema = require('./baseSchema');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const profileSchema = new mongoose.Schema({
@@ -8,7 +9,7 @@ const profileSchema = new mongoose.Schema({
     company: String
 }, { timestamps: true});
 
-const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema(Object.assign({}, {
     firstName: String,
     lastName: String,
     birthDate: Date,
@@ -16,15 +17,7 @@ const userSchema = new mongoose.Schema({
     password: String,
     profiles: [profileSchema],
     tasks: [{type: ObjectId, ref: 'Task'}]
-}, { timestamps: true});
+}), Object.assign({}, {timestamps: true}, baseSchema));
 
-userSchema.options.toJSON = {
-    transform: function(doc, ret, options) {
-        ret.id = ret._id;
-        delete ret._id;
-        delete ret.__v;
-        return ret;
-    }
-};
 
 module.exports = mongoose.model('User', userSchema);
