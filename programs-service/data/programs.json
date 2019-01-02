@@ -2,6 +2,7 @@
   {
     "id": "aa11",
     "title": "Abs",
+    "notes": "Some notes",
     "exercises": [
       {
         "id": "aa11e1",
@@ -10,6 +11,7 @@
         "comment": "",
         "iterations": [
           {
+            "id": "aa11e1i1",
             "order": 1,
             "tags": {
               "count": 20,
@@ -17,6 +19,7 @@
             }
           },
           {
+            "id": "aa11e1i2",
             "order": 2,
             "tags": {
               "count": 25,
@@ -24,6 +27,7 @@
             }
           },
           {
+            "id": "aa11e1i3",
             "order": 3,
             "tags": {
               "count": 30,
@@ -39,6 +43,7 @@
         "comment": "",
         "iterations": [
           {
+            "id": "aa11e2i1",
             "order": 1,
             "tags": {
               "count": 40,
@@ -46,6 +51,7 @@
             }
           },
           {
+            "id": "aa11e2i2",
             "order": 2,
             "tags": {
               "count": 50,
@@ -61,6 +67,7 @@
         "comment": "",
         "iterations": [
           {
+            "id": "aa11e3i1",
             "order": 1,
             "tags": {
               "count": 40,
@@ -68,6 +75,7 @@
             }
           },
           {
+            "id": "aa11e3i2",
             "order": 2,
             "tags": {
               "count": 60,

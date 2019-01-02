@@ -3,13 +3,14 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const baseSchemaOptions = require('./baseSchemaOptions');
 
 const tagsSchema = new mongoose.Schema({
+    _id: false,
     count: String,
     time: String,
     distance: String,
     flection: String,
     speed: String,
     weight: String
-}, Object.assign({}, {timestamps: true}, baseSchemaOptions));
+},{timestamps: true});
 
 const iterationSchema = new mongoose.Schema({
     order: Number,
