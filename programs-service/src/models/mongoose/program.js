@@ -19,6 +19,7 @@ const iterationSchema = new mongoose.Schema({
 const exerciseSchema = new mongoose.Schema({
     title: String,
     order: Number,
+    comment: String,
     iterations: [iterationSchema]
 }, Object.assign({}, {timestamps: true}, baseSchemaOptions));
 

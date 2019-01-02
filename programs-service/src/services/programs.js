@@ -24,12 +24,6 @@ const get = async (id) => {
     return program;
 };
 
-const getExercises = async (id) => {
-    print('Get exercises for program with id ' + id);
-    return Program.getExercises(id);
-};
-
-
 const add = async program => {
     try {
         return Program.add({...program});
@@ -75,7 +69,7 @@ const updatePatch = async (id, program) => {
 const remove = async id => {
     let result;
     try {
-        result = await Program.remove({_id: id});
+        result = await Program.remove(id);
     }
     catch (e) {
         if(e instanceof InvalidIdError) {
@@ -90,14 +84,43 @@ const remove = async id => {
     }
 };
 
+//---------------------------
+
+const listExercises = async (id) => {
+    print('Get exercises for program with id ' + id);
+    return Program.listExercises(id);
+};
+
+const getExercise = async (id, exerciseId) => {
+    print(`Get exercise with id ${exerciseId} for program with id ${id}`);
+    return Program.getExercise(id, exerciseId);
+};
+
+// TODO: - add validation
+const addExercise = async (id, exercise) => {
+    return Program.addExercise(id, exercise);
+};
+
+const updateExercise = async (id, exerciseId, exercise) => {
+    return Program.updateExercise(id, exerciseId, exercise);
+};
+
+const removeExercise = async (id, exerciseId) => {
+    return Program.removeExercise(id, exerciseId);
+};
+
 const ProgramsService = {
     list,
     get,
-    getExercises,
     add,
     update,
     updatePatch,
-    remove
+    remove,
+    listExercises,
+    getExercise,
+    addExercise,
+    updateExercise,
+    removeExercise
 };
 
 module.exports = ProgramsService;

@@ -1,10 +1,11 @@
-[program
+[
   {
     "id": "aa11",
     "title": "Abs",
     "exercises": [
       {
         "id": "aa11e1",
+        "order": 1,
         "title": "Sit-up",
         "comment": "",
         "iterations": [
@@ -33,6 +34,7 @@
       },
       {
         "id": "aa11e2",
+        "order": 2,
         "title": "Russian twist",
         "comment": "",
         "iterations": [
@@ -54,6 +56,7 @@
       },
       {
         "id": "aa11e3",
+        "order": 3,
         "title": "Crunch",
         "comment": "",
         "iterations": [
@@ -75,6 +78,7 @@
       },
       {
         "id": "aa11e4",
+        "order": 4,
         "title": "Leg raise",
         "comment": "",
         "iterations": [
@@ -109,6 +113,7 @@
     "exercises": [
       {
         "id": "aa22e1",
+        "order": 1,
         "title": "Plank",
         "comment": "",
         "iterations": [

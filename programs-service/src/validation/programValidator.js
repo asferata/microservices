@@ -1,4 +1,4 @@
 const {ProgramSchema} = require('@schemas/');
 const baseValidator = require('./baseValidator');
 
-module.exports = baseValidator.validate(ProgramSchema);
+// module.exports = baseValidator.validate(ProgramSchema);
