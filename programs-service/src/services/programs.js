@@ -93,21 +93,108 @@ const listExercises = async (id) => {
 
 const getExercise = async (id, exerciseId) => {
     print(`Get exercise with id ${exerciseId} for program with id ${id}`);
-    return Program.getExercise(id, exerciseId);
+    let exercise = Program.getExercise(id, exerciseId);
+    if (!exercise) {
+        throw new EntityNotFoundError("Exercise with specified id was not found");
+    }
+
+    return exercise;
 };
 
 // TODO: - add validation
 const addExercise = async (id, exercise) => {
-    return Program.addExercise(id, exercise);
+    try {
+        return Program.addExercise(id, exercise);
+    }
+    catch (e) {
+        throw new EntitySaveError("Failed to save exercise");
+    }
 };
 
 const updateExercise = async (id, exerciseId, exercise) => {
-    return Program.updateExercise(id, exerciseId, exercise);
+    try {
+        await Program.updateExercise(id, exerciseId, exercise);
+    }
+    catch (e) {
+        if(e instanceof InvalidIdError) {
+            throw new EntityNotFoundError("Exercise with specified id was not found");
+        }
+
+        throw new EntitySaveError("Failed to update exercise");
+    }
+
+    return getExercise(id, exerciseId);
 };
 
 const removeExercise = async (id, exerciseId) => {
-    return Program.removeExercise(id, exerciseId);
+    try {
+        await Program.removeExercise(id, exerciseId);
+    }
+    catch (e) {
+        if(e instanceof InvalidIdError) {
+            throw new EntityNotFoundError("Exercise with specified id was not found");
+        }
+
+        throw new EntitySaveError("Failed to remove exercise");
+    }
 };
+
+//---------------------------
+
+
+const listIterations = async (id, exerciseId) => {
+    print('Get list of iterations');
+    return await Program.listIterations(id, exerciseId);
+};
+
+const getIteration = async (id, exerciseId, iterationId) => {
+    print(`Get iteration with id ${exerciseId} for iteration with id ${id}`);
+    let iteration = Program.getIteration(id, exerciseId, iterationId);
+    if (!iteration) {
+        throw new EntityNotFoundError("Iteration with specified id was not found");
+    }
+
+    return iteration;
+};
+
+// TODO: - add validation
+const addIteration = async (id, exerciseId, iteration) => {
+    try {
+        return Program.addIteration(id, exerciseId, iteration);
+    }
+    catch (e) {
+        throw new EntitySaveError("Failed to save iteration");
+    }
+};
+
+const updateIteration = async (id, exerciseId, iterationId, iteration) => {
+    try {
+        await Program.updateIteration(id, exerciseId, iterationId, iteration);
+    }
+    catch (e) {
+        if(e instanceof InvalidIdError) {
+            throw new EntityNotFoundError("Iteration with specified id was not found");
+        }
+
+        throw new EntitySaveError("Failed to update iteration");
+    }
+
+    return getIteration(id, exerciseId, iterationId);
+};
+
+const removeIteration = async (id, exerciseId, iterationId) => {
+    try {
+        await Program.removeIteration(id, exerciseId, iterationId);
+    }
+    catch (e) {
+        if(e instanceof InvalidIdError) {
+            throw new EntityNotFoundError("Iteration with specified id was not found");
+        }
+
+        throw new EntitySaveError("Failed to remove iteration");
+    }
+};
+
 
 const ProgramsService = {
     list,
@@ -120,7 +207,12 @@ const ProgramsService = {
     getExercise,
     addExercise,
     updateExercise,
-    removeExercise
+    removeExercise,
+    listIterations,
+    getIteration,
+    addIteration,
+    updateIteration,
+    removeIteration
 };
 
 module.exports = ProgramsService;

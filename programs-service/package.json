@@ -13,6 +13,7 @@
     "ajv-async": "^1.0.1",
     "ajv-errors": "^1.0.0",
     "config": "^3.0.1",
+    "body-parser": "^1.18.3",
     "module-alias": "^2.1.0",
     "moment": "^2.23.0",
     "mongoose": "^5.2.14",

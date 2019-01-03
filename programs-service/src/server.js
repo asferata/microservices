@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 var restify = require('restify');
 // const config = require('config');
 const mongodbConfig = require('@config/default');
+const bodyParser = require('body-parser');
 const {ErrorHandler} = require('@errors/');
 mongoose.connect(mongodbConfig.connectionString, {useNewUrlParser: true});
 
@@ -13,6 +14,7 @@ let server = restify.createServer();
 
 require('@routes/programs')('/api/v1/programs', server);
 
+server.use(bodyParser.json());
 server.get('/healthcheck', function (req, res, next) {
     res.json(200, "It's alive");
     return next();
