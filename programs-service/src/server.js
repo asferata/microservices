@@ -3,39 +3,35 @@
 require('module-alias/register');
 
 const mongoose = require('mongoose');
-const express = require('express');
+var restify = require('restify');
 // const config = require('config');
 const mongodbConfig = require('@config/default');
-//const mongoConfig = config.get('mongodb');
-const bodyParser = require('body-parser');
-const routes = require('@routes/');
 const {ErrorHandler} = require('@errors/');
-
-// mongoose.connect(mongoConfig.connectionString, {useNewUrlParser: true});
 mongoose.connect(mongodbConfig.connectionString, {useNewUrlParser: true});
 
-let app = express();
+let server = restify.createServer();
 
-app.use(bodyParser.json());
-app.use('/api/v1/programs', routes.Programs);
+require('@routes/programs')('/api/v1/programs', server);
 
-app.use('/healthcheck', function (req, res) {
-    res.status(200).json("It's alive");
-})
+server.get('/healthcheck', function (req, res, next) {
+    res.json(200, "It's alive");
+    return next();
+});
 
-app.use(function (err, req, res, next) {
+server.on('restifyError', function (req, res, err, cb) {
+    // this listener will fire after both events above!
+    // `err` here is the same as the error that was passed to the above
+    // error handlers.
     if (res.headersSent) {
         return next(err)
     }
 
     ErrorHandler.handle(err, res);
+
+    return cb();
 });
 
-let server = app.listen(8040, function () {
-
-    let host = server.address().address;
-    let port = server.address().port;
-
-    console.log("Example app listening at http://%s:%s", host, port)
+server.listen(8040, function () {
+    console.log(`Example app listening at ${server.url}`)
 
 });

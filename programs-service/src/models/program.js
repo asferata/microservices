@@ -1,23 +1,19 @@
 const {Program: ProgramModel} = require('./mongoose');
 const {Validation} = require('@dataValidation/');
-const _ = require('lodash');
 
 async function list() {
     let programs = await ProgramModel.find();
-    programs = programs.map(x => x.toJSON());
-    // TODO: use schema here
-    return programs;//.map(x => _.omit(x, 'exercises'));
+    return programs ? programs.map(x => x.toJSON()) : null;
 }
 
 async function get(id) {
     let program = await ProgramModel.findById(id);
-    return program.toJSON();
+    return program ? program.toJSON() : null;
 }
 
 async function add(program) {
     let createdProgram = await ProgramModel.create(program);
     return get(createdProgram.id);
-
 }
 
 async function update(id, program) {
@@ -56,7 +52,6 @@ async function addExercise(id, exercise) {
     program.exercises.push(exercise);
     await program.save();
     let createdExercise = program.exercises[program.exercises.length - 1];
-    //return getExercise(id, createdExercise._id);
     return createdExercise.toJSON();
 }
 
@@ -74,7 +69,6 @@ async function updateExercise(id, exerciseId, exercise) {
     // remove deleted iterations
     let iterationsIds = exercise.iterations.map( x => x.id);
     let dbIterationsIds = dbExercise.iterations.map( x => x.id);
-    // dbExercise.iterations.filter(x => !iterationsIds.contains(x.id)).forEach(x => dbExercise.iterations.id(x.id).remove());
     dbExercise.iterations.forEach(x => {
         if(!iterationsIds.includes(x.id)) {
             dbExercise.iterations.id(x.id).remove();
