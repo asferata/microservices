@@ -19,42 +19,19 @@ const print = logger => err => {
 const printConsole = print(console.log);
 
 const handle = (err, res) => {
-    /*if (err instanceof Ajv.ValidationError) {
-        res.status(400).send(rewriteValidationError(err));
-        return;
-    }*/
-
-    // proper handling
-    /*
-    if (err instanceof ValidationError) {
-        res.status(400).send(err.message);
-        return;
-    }
-    else if(err instanceof EntityNotFoundError) {
-        res.status(404).send(err.message);
-        return;
-    }
-
-    printConsole(err);
-    if(err instanceof EntitySaveError) {
-        res.status(500).send(err.message);
-    }
-    else {
-        res.status(err.status || 500)
-            .send(err.message || "Something wicked this way came");
-    }*/
-
     // pretty proper handling
     if(err instanceof BaseError) {
         if(err.loggable) {
             printConsole(err);
         }
 
-        res.status(err.status).send(err.message);
+        res.send(err.status, err.message);
+    }
+    else if(err.body && err.body.code){
+        res.send(err);
     }
     else {
-        res.status(err.status || 500)
-            .send(err.message || "Something wicked this way came");
+        res.send(err.status || 500, err.message || "Something wicked this way came");
     }
 };
 
