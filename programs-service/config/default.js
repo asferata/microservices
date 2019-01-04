@@ -1,6 +1,6 @@
 
   const mongodb = {
-    connectionString: `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}/${process.env.MONGO_DATABASE}`
+    connectionString: `${process.env.MONGO_CONNECTION_STRING}`
     //connectionStringSSS: "mongodb://natalie:qwerty123@192.168.99.101:30017/admin"
   };
 
