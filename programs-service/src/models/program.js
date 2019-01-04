@@ -1,8 +1,8 @@
 const {Program: ProgramModel} = require('./mongoose');
-const {Validation} = require('@dataValidation/');
+const {Validation: {withIdValidation}} = require('@dataValidation/');
 
-async function findChildTree(paths, ids) {
-    let program = await ProgramModel.findById(ids[0]);
+const getChildrenTree = async (parentModel, paths, ids) => {
+    let program = await parentModel.findById(ids[0]);
     ids.shift();
 
     return paths.reduce((acc, cur, idx) => {
@@ -22,14 +22,51 @@ async function findChildTree(paths, ids) {
         acc.push(value);
         return acc;
     }, [program]);
-}
+};
 
-async function findChild(paths, ids) {
-    let result = await findChildTree(paths, ids);
+const getChildrenTree2 = async parentModel => async (paths, ids) => {
+    let program = await parentModel.findById(ids[0]);
+    ids.shift();
+
+    return paths.reduce((acc, cur, idx) => {
+        if(!acc) {
+            return null;
+        }
+
+        let value = acc[acc.length - 1][cur];
+        if(idx < ids.length) {
+            value = value.id(ids[idx]);
+        }
+
+        if(!value) {
+            return null;
+        }
+
+        acc.push(value);
+        return acc;
+    }, [program]);
+};
+
+const findChild = async (parentModel, paths, ids) => {
+    let result = await getChildrenTree(parentModel, paths, ids);
     return result ? result[result.length - 1] : null;
-}
+};
 
-// async function findChild(paths, ids) {
+
+const findChild2 = async parentModel => async (paths, ids) => {
+    let result = await getChildrenTree(parentModel)(paths, ids);
+    return result ? result[result.length - 1] : null;
+};
+
+const getProgramChildrenTree = async (paths, ids) => getChildrenTree(ProgramModel, paths, ids);
+const findProgramChild = async (paths, ids) => findChild(ProgramModel, paths, ids);
+
+
+const getProgramChildrenTree2 = getChildrenTree2(ProgramModel);
+const findProgramChild2 = findChild2(ProgramModel);
+
+
+// async function findProgramChild(paths, ids) {
 //     let program = await findProgram(ids[0]);
 //     ids.shift();
 //
@@ -43,7 +80,7 @@ async function findChild(paths, ids) {
 //     }, program);
 // }
 
-// async function findChild(paths, ids) {
+// async function findProgramChild(paths, ids) {
 //     // let program = await findProgram(ids[0]);
 //     // ids.shift();
 //
@@ -62,8 +99,8 @@ async function findChild(paths, ids) {
 //     }, null);
 // }
 
-async function createChild(paths, ids, child) {
-    let tree = await findChildTree(paths, ids);
+async function createProgramChild(paths, ids, child) {
+    let tree = await getProgramChildrenTree(paths, ids);
     if(!tree) {
         return null;
     }
@@ -75,8 +112,8 @@ async function createChild(paths, ids, child) {
     return dbChildren[dbChildren.length - 1];
 }
 
-async function updateChild(paths, ids, child, additional) {
-    let tree = await findChildTree(paths, ids);
+async function updateProgramChild(paths, ids, child, additional) {
+    let tree = await getProgramChildrenTree(paths, ids);
     if(!tree) {
         return null;
     }
@@ -90,8 +127,8 @@ async function updateChild(paths, ids, child, additional) {
     await tree[0].save();
 }
 
-async function removeChild(paths, ids) {
-    let tree = await findChildTree(paths, ids);
+async function removeProgramChild(paths, ids) {
+    let tree = await getProgramChildrenTree(paths, ids);
     if(!tree) {
         return null;
     }
@@ -170,7 +207,7 @@ async function remove(id) {
 // }
 
 async function listExercises(id) {
-    return findChild(['exercises'], [id]);
+    return findProgramChild(['exercises'], [id]);
 }
 
 // async function getExercise(id, exerciseId) {
@@ -179,7 +216,7 @@ async function listExercises(id) {
 // }
 
 async function getExercise(id, exerciseId) {
-    return findChild(['exercises'], [id, exerciseId]);
+    return findProgramChild(['exercises'], [id, exerciseId]);
 }
 
 // async function addExercise(id, exercise) {
@@ -195,7 +232,7 @@ async function getExercise(id, exerciseId) {
 // }
 
 async function addExercise(id, exercise) {
-    return createChild(['exercises'], [id], exercise);
+    return createProgramChild(['exercises'], [id], exercise);
 }
 
 // async function updateExercise(id, exerciseId, exercise) {
@@ -219,7 +256,7 @@ async function addExercise(id, exercise) {
 // }
 
 async function updateExercise(id, exerciseId, exercise) {
-    await updateChild(['exercises'], [id, exerciseId], exercise, updateIterations(exercise));
+    await updateProgramChild(['exercises'], [id, exerciseId], exercise, updateIterations(exercise));
 }
 
 // function updateIterations(exercise, dbExercise) {
@@ -270,7 +307,7 @@ function updateIterations(exercise) {
 // }
 
 async function removeExercise(id, exerciseId) {
-    await removeChild(['exercises'], [id, exerciseId]);
+    await removeProgramChild(['exercises'], [id, exerciseId]);
 }
 
 //----------------------------------------
@@ -283,7 +320,7 @@ async function removeExercise(id, exerciseId) {
 // }
 
 async function listIterations(id, exerciseId) {
-    return findChild(['exercises', 'iterations'], [id, exerciseId]);
+    return findProgramChild(['exercises', 'iterations'], [id, exerciseId]);
 }
 
 // async function getIteration(id, exerciseId, iterationId) {
@@ -292,7 +329,7 @@ async function listIterations(id, exerciseId) {
 // }
 
 async function getIteration(id, exerciseId, iterationId) {
-    return findChild(['exercises', 'iterations'], [id, exerciseId, iterationId]);
+    return findProgramChild(['exercises', 'iterations'], [id, exerciseId, iterationId]);
 }
 
 // async function addIteration(id, exerciseId, iteration) {
@@ -313,7 +350,7 @@ async function getIteration(id, exerciseId, iterationId) {
 // }
 
 async function addIteration(id, exerciseId, iteration) {
-    return createChild(['exercises', 'iterations'], [id, exerciseId], iteration);
+    return createProgramChild(['exercises', 'iterations'], [id, exerciseId], iteration);
 }
 
 // async function updateIteration(id, exerciseId, iterationId, iteration) {
@@ -340,7 +377,7 @@ async function addIteration(id, exerciseId, iteration) {
 
 
 async function updateIteration(id, exerciseId, iterationId, iteration) {
-    await updateChild(['exercises', 'iterations'], [id, exerciseId, iterationId], iteration);
+    await updateProgramChild(['exercises', 'iterations'], [id, exerciseId, iterationId], iteration);
 }
 
 // async function removeIteration(id, exerciseId, iterationId) {
@@ -364,26 +401,26 @@ async function updateIteration(id, exerciseId, iterationId, iteration) {
 // }
 
 async function removeIteration(id, exerciseId, iterationId) {
-    await removeChild(['exercises', 'iterations'], [id, exerciseId, iterationId]);
+    await removeProgramChild(['exercises', 'iterations'], [id, exerciseId, iterationId]);
 }
 
 const Program = {
     list: toJsonArray(list),
-    get: Validation.withIdValidation(toJson(get)),
+    get: withIdValidation(toJson(get)),
     add: toJson(add),
-    update : Validation.withIdValidation(update),
-    remove: Validation.withIdValidation(remove),
-    listExercises: Validation.withIdValidation(toJsonArray(listExercises)),
-    getExercise: Validation.withIdValidation(toJson(getExercise)),
-    addExercise: Validation.withIdValidation(toJson(addExercise)),
-    updateExercise: Validation.withIdValidation(updateExercise),
-    removeExercise: Validation.withIdValidation(removeExercise),
+    update : withIdValidation(update),
+    remove: withIdValidation(remove),
+    listExercises: withIdValidation(toJsonArray(listExercises)),
+    getExercise: withIdValidation(toJson(getExercise)),
+    addExercise: withIdValidation(toJson(addExercise)),
+    updateExercise: withIdValidation(updateExercise),
+    removeExercise: withIdValidation(removeExercise),
 
-    listIterations: Validation.withIdValidation(toJsonArray(listIterations)),
-    getIteration: Validation.withIdValidation(toJson(getIteration)),
-    addIteration: Validation.withIdValidation(toJson(addIteration)),
-    updateIteration: Validation.withIdValidation(updateIteration),
-    removeIteration: Validation.withIdValidation(removeIteration)
+    listIterations: withIdValidation(toJsonArray(listIterations)),
+    getIteration: withIdValidation(toJson(getIteration)),
+    addIteration: withIdValidation(toJson(addIteration)),
+    updateIteration: withIdValidation(updateIteration),
+    removeIteration: withIdValidation(removeIteration)
 };
 
 module.exports = Program;
