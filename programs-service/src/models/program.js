@@ -2,7 +2,7 @@ const {Program: ProgramModel} = require('./mongoose');
 const {Validation} = require('@dataValidation/');
 
 async function findChildTree(paths, ids) {
-    let program = await findProgram(ids[0]);
+    let program = await ProgramModel.findById(ids[0]);
     ids.shift();
 
     return paths.reduce((acc, cur, idx) => {
@@ -105,13 +105,13 @@ async function removeChild(paths, ids) {
 //     return await ProgramModel.findById(id);
 // }
 
-async function findProgram(id) {
-    if(id) {
-        return await ProgramModel.findById(id);
-    }
-
-    return await ProgramModel.find();
-}
+// async function findProgram(id) {
+//     if(id) {
+//         return await ProgramModel.findById(id);
+//     }
+//
+//     return await ProgramModel.find();
+// }
 
 const toJson = func => {
     return async (...rest) => {
