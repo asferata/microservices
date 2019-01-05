@@ -32,7 +32,7 @@ module.exports = function(baseRoute, server) {
     });
 
 // TODO: temporarily commented out in order to create full program
-    server.post(`${baseRoute}/`, baseValidator.validate(schemas.ProgramDefaultSchema), async function (req, res, next) {
+    server.post(`${baseRoute}/`, /*baseValidator.validate(schemas.ProgramDefaultSchema),*/ async function (req, res, next) {
         try {
             let program = await ProgramsService.add(req.body);
             res.json(201, filterProgramDefault(program));
