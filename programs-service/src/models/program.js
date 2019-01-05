@@ -1,14 +1,187 @@
 const {Program: ProgramModel} = require('./mongoose');
-const {Validation} = require('@dataValidation/');
+const {Validation: {withIdValidation}} = require('@dataValidation/');
 
-async function list() {
-    let programs = await ProgramModel.find();
-    return programs ? programs.map(x => x.toJSON()) : null;
+const getChildrenTree = async (parentModel, paths, ids) => {
+    let program = await parentModel.findById(ids[0]);
+    ids.shift();
+
+    return paths.reduce((acc, cur, idx) => {
+        if(!acc) {
+            return null;
+        }
+
+        let value = acc[acc.length - 1][cur];
+        if(idx < ids.length) {
+            value = value.id(ids[idx]);
+        }
+
+        if(!value) {
+            return null;
+        }
+
+        acc.push(value);
+        return acc;
+    }, [program]);
+};
+
+const getChildrenTree2 = async parentModel => async (paths, ids) => {
+    let program = await parentModel.findById(ids[0]);
+    ids.shift();
+
+    return paths.reduce((acc, cur, idx) => {
+        if(!acc) {
+            return null;
+        }
+
+        let value = acc[acc.length - 1][cur];
+        if(idx < ids.length) {
+            value = value.id(ids[idx]);
+        }
+
+        if(!value) {
+            return null;
+        }
+
+        acc.push(value);
+        return acc;
+    }, [program]);
+};
+
+const findChild = async (parentModel, paths, ids) => {
+    let result = await getChildrenTree(parentModel, paths, ids);
+    return result ? result[result.length - 1] : null;
+};
+
+
+const findChild2 = async parentModel => async (paths, ids) => {
+    let result = await getChildrenTree(parentModel)(paths, ids);
+    return result ? result[result.length - 1] : null;
+};
+
+const getProgramChildrenTree = async (paths, ids) => getChildrenTree(ProgramModel, paths, ids);
+const findProgramChild = async (paths, ids) => findChild(ProgramModel, paths, ids);
+
+
+const getProgramChildrenTree2 = getChildrenTree2(ProgramModel);
+const findProgramChild2 = findChild2(ProgramModel);
+
+
+// async function findProgramChild(paths, ids) {
+//     let program = await findProgram(ids[0]);
+//     ids.shift();
+//
+//     return paths.reduce((acc, cur, idx) => {
+//         let value = acc[cur];
+//         if(idx < ids.length) {
+//             value = value.id(ids[idx]);
+//         }
+//
+//         return value;
+//     }, program);
+// }
+
+// async function findProgramChild(paths, ids) {
+//     // let program = await findProgram(ids[0]);
+//     // ids.shift();
+//
+//     paths.unshift(null);
+//     return paths.reduce(async (acc, cur, idx) => {
+//         if(acc == null) {
+//             return await findProgram(ids[idx]);
+//         }
+//
+//         let value = acc[cur];
+//         if(idx < ids.length) {
+//             value = value.id(ids[idx]);
+//         }
+//
+//         return value;
+//     }, null);
+// }
+
+async function createProgramChild(paths, ids, child) {
+    let tree = await getProgramChildrenTree(paths, ids);
+    if(!tree) {
+        return null;
+    }
+
+    let dbChildren = tree[tree.length - 1];
+
+    dbChildren.push(child);
+    await tree[0].save();
+    return dbChildren[dbChildren.length - 1];
 }
 
+async function updateProgramChild(paths, ids, child, additional) {
+    let tree = await getProgramChildrenTree(paths, ids);
+    if(!tree) {
+        return null;
+    }
+
+    let dbChild = tree[tree.length - 1];
+    if(additional) {
+        additional(dbChild);
+    }
+
+    dbChild.set(child);
+    await tree[0].save();
+}
+
+async function removeProgramChild(paths, ids) {
+    let tree = await getProgramChildrenTree(paths, ids);
+    if(!tree) {
+        return null;
+    }
+
+    let dbChild = tree[tree.length - 1];
+    dbChild.remove();
+    await tree[0].save();
+}
+
+// async function findProgram(id) {
+//     return await ProgramModel.findById(id);
+// }
+
+// async function findProgram(id) {
+//     if(id) {
+//         return await ProgramModel.findById(id);
+//     }
+//
+//     return await ProgramModel.find();
+// }
+
+const toJson = func => {
+    return async (...rest) => {
+        let result = await func(...rest);
+        return result ? result.toJSON() : null;
+    };
+};
+
+const toJsonArray = func => {
+    return async (...rest) => {
+        let result = await func(...rest);
+        return result ? result.map(x => x.toJSON()) : [];
+    };
+};
+
+//--------------------------------
+
+// async function list() {
+//     let programs = await ProgramModel.find();
+//     return programs ? programs.map(x => x.toJSON()) : null;
+// }
+
+async function list() {
+    return await ProgramModel.find();
+}
+
+// async function get(id) {
+//     let program = await findProgram(id);
+//     return program ? program.toJSON() : null;
+// }
+
 async function get(id) {
-    let program = await ProgramModel.findById(id);
-    return program ? program.toJSON() : null;
+    return await ProgramModel.findById(id);
 }
 
 async function add(program) {
@@ -18,7 +191,7 @@ async function add(program) {
 
 async function update(id, program) {
     await ProgramModel.updateOne({_id: id}, {$set: {...program}});
-    return get(id);
+    // return get(id);
 }
 
 async function remove(id) {
@@ -28,90 +201,226 @@ async function remove(id) {
 
 //----------------------------------------
 
+// async function listExercises(id) {
+//     let program = await findProgram(id);
+//     return program ? program.exercises.map(x => x.toJSON()) : [];
+// }
+
 async function listExercises(id) {
-    let program = await ProgramModel.findById(id);
-    return program ? program.exercises.map(x => x.toJSON()) : [];
+    return findProgramChild(['exercises'], [id]);
 }
+
+// async function getExercise(id, exerciseId) {
+//     let exercise = await findExercise(id, exerciseId);
+//     return exercise ? exercise.toJSON() : null;
+// }
 
 async function getExercise(id, exerciseId) {
-    let program = await ProgramModel.findById(id);
-    if(!program) {
-        return null;
-    }
-
-    let exercise = program.exercises.id(exerciseId);
-    return exercise ? exercise.toJSON() : null;
+    return findProgramChild(['exercises'], [id, exerciseId]);
 }
+
+// async function addExercise(id, exercise) {
+//     let program = await findProgram(id);
+//     if(!program) {
+//         return null;
+//     }
+//
+//     program.exercises.push(exercise);
+//     await program.save();
+//     let createdExercise = program.exercises[program.exercises.length - 1];
+//     return createdExercise.toJSON();
+// }
 
 async function addExercise(id, exercise) {
-    let program = await ProgramModel.findById(id);
-    if(!program) {
-        return null;
-    }
-
-    program.exercises.push(exercise);
-    await program.save();
-    let createdExercise = program.exercises[program.exercises.length - 1];
-    return createdExercise.toJSON();
+    return createProgramChild(['exercises'], [id], exercise);
 }
+
+// async function updateExercise(id, exerciseId, exercise) {
+//     let program = await findProgram(id);
+//     if(!program) {
+//         return null;
+//     }
+//
+//     let dbExercise = program.exercises.id(exerciseId);
+//     if(!dbExercise) {
+//         return null;
+//     }
+//
+//     // update iterations
+//     updateIterations(exercise, dbExercise);
+//     delete(exercise.iterations);
+//     dbExercise.set(exercise);
+//
+//     await program.save();
+//     return dbExercise.toJSON();
+// }
 
 async function updateExercise(id, exerciseId, exercise) {
-    let program = await ProgramModel.findById(id);
-    if(!program) {
-        return null;
-    }
-
-    let dbExercise = program.exercises.id(exerciseId);
-    if(!dbExercise) {
-        return null;
-    }
-
-    // remove deleted iterations
-    let iterationsIds = exercise.iterations.map( x => x.id);
-    let dbIterationsIds = dbExercise.iterations.map( x => x.id);
-    dbExercise.iterations.forEach(x => {
-        if(!iterationsIds.includes(x.id)) {
-            dbExercise.iterations.id(x.id).remove();
-        }
-        else {
-            dbExercise.iterations.id(x.id).set(exercise.iterations.find(i => i.id === x.id));
-        }
-    });
-
-    exercise.iterations.filter(x => !dbIterationsIds.includes(x.id)).forEach(x => dbExercise.iterations.add(x));
-    delete(exercise.iterations);
-    dbExercise.set(exercise);
-
-    await program.save();
-    return dbExercise.toJSON();
+    await updateProgramChild(['exercises'], [id, exerciseId], exercise, updateIterations(exercise));
 }
 
+// function updateIterations(exercise, dbExercise) {
+//     let iterationsIds = exercise.iterations.map(x => x.id);
+//     let dbIterationsIds = dbExercise.iterations.map(x => x.id);
+//     dbExercise.iterations.forEach(x => {
+//         if (!iterationsIds.includes(x.id)) {
+//             dbExercise.iterations.id(x.id).remove();
+//         } else {
+//             dbExercise.iterations.id(x.id).set(exercise.iterations.find(i => i.id === x.id));
+//         }
+//     });
+//
+//     exercise.iterations.filter(x => !dbIterationsIds.includes(x.id)).forEach(x => dbExercise.iterations.add(x));
+//     delete(exercise.iterations);
+// }
+
+function updateIterations(exercise) {
+    return dbExercise => {
+        let iterationsIds = exercise.iterations.map(x => x.id);
+        let dbIterationsIds = dbExercise.iterations.map(x => x.id);
+        dbExercise.iterations.forEach(x => {
+            if (!iterationsIds.includes(x.id)) {
+                dbExercise.iterations.id(x.id).remove();
+            } else {
+                dbExercise.iterations.id(x.id).set(exercise.iterations.find(i => i.id === x.id));
+            }
+        });
+
+        exercise.iterations.filter(x => !dbIterationsIds.includes(x.id)).forEach(x => dbExercise.iterations.add(x));
+        delete (exercise.iterations);
+    }
+}
+
+// async function removeExercise(id, exerciseId) {
+//     let program = await findProgram(id);
+//     if(!program) {
+//         return null;
+//     }
+//
+//     let dbExercise = program.exercises.id(exerciseId);
+//     if(!dbExercise) {
+//         return null;
+//     }
+//
+//     dbExercise.remove();
+//     await program.save();
+// }
+
 async function removeExercise(id, exerciseId) {
-    let program = await ProgramModel.findById(id);
-    if(!program) {
-        return null;
-    }
+    await removeProgramChild(['exercises'], [id, exerciseId]);
+}
 
-    let dbExercise = program.exercises.id(exerciseId);
-    if(!dbExercise) {
-        return null;
-    }
+//----------------------------------------
 
-    dbExercise.remove();
-    await program.save();
+
+
+// async function listIterations(id, exerciseId) {
+//     let exercise = await findExercise(id, exerciseId);
+//     return (exercise && exercise.iterations) ? exercise.iterations.map(x => x.toJSON()) : [];
+// }
+
+async function listIterations(id, exerciseId) {
+    return findProgramChild(['exercises', 'iterations'], [id, exerciseId]);
+}
+
+// async function getIteration(id, exerciseId, iterationId) {
+//     let iteration = await findIteration(id, exerciseId, iterationId);
+//     return iteration ? iteration.toJSON() : null;
+// }
+
+async function getIteration(id, exerciseId, iterationId) {
+    return findProgramChild(['exercises', 'iterations'], [id, exerciseId, iterationId]);
+}
+
+// async function addIteration(id, exerciseId, iteration) {
+//     let program = await findProgram(id);
+//     if(!program) {
+//         return null;
+//     }
+//
+//     let exercise = program.exercises.id(exerciseId);
+//     if(!exercise) {
+//         return null;
+//     }
+//
+//     exercise.iterations.push(iteration);
+//     await program.save();
+//     let createdIteration = exercises.iterations[exercise.iterations.length - 1];
+//     return createdIteration.toJSON();
+// }
+
+async function addIteration(id, exerciseId, iteration) {
+    return createProgramChild(['exercises', 'iterations'], [id, exerciseId], iteration);
+}
+
+// async function updateIteration(id, exerciseId, iterationId, iteration) {
+//     let program = await findProgram(id);
+//     if(!program) {
+//         return null;
+//     }
+//
+//     let exercise = program.exercises.id(exerciseId);
+//     if(!exercise) {
+//         return null;
+//     }
+//
+//     let dbIteration = exercise.iterations.id(iterationId);
+//     if(!dbIteration) {
+//         return null;
+//     }
+//
+//     dbIteration.set(iteration);
+//
+//     await program.save();
+//     return dbIteration.toJSON();
+// }
+
+
+async function updateIteration(id, exerciseId, iterationId, iteration) {
+    await updateProgramChild(['exercises', 'iterations'], [id, exerciseId, iterationId], iteration);
+}
+
+// async function removeIteration(id, exerciseId, iterationId) {
+//     let program = await findProgram(id);
+//     if(!program) {
+//         return null;
+//     }
+//
+//     let exercise = program.exercises.id(exerciseId);
+//     if(!exercise) {
+//         return null;
+//     }
+//
+//     let iteration = exercise.iterations.id(iterationId);
+//     if(!iteration) {
+//         return null;
+//     }
+//
+//     iteration.remove();
+//     await program.save();
+// }
+
+async function removeIteration(id, exerciseId, iterationId) {
+    await removeProgramChild(['exercises', 'iterations'], [id, exerciseId, iterationId]);
 }
 
 const Program = {
-    list,
-    get: Validation.withIdValidation(get),
-    add,
-    update : Validation.withIdValidation(update),
-    remove: Validation.withIdValidation(remove),
-    listExercises: Validation.withIdValidation(listExercises),
-    getExercise: Validation.withIdValidation(getExercise),
-    addExercise: Validation.withIdValidation(addExercise),
-    updateExercise: Validation.withIdValidation(updateExercise),
-    removeExercise: Validation.withIdValidation(removeExercise)
+    list: toJsonArray(list),
+    get: withIdValidation(toJson(get)),
+    add: toJson(add),
+    update : withIdValidation(update),
+    remove: withIdValidation(remove),
+    listExercises: withIdValidation(toJsonArray(listExercises)),
+    getExercise: withIdValidation(toJson(getExercise)),
+    addExercise: withIdValidation(toJson(addExercise)),
+    updateExercise: withIdValidation(updateExercise),
+    removeExercise: withIdValidation(removeExercise),
+
+    listIterations: withIdValidation(toJsonArray(listIterations)),
+    getIteration: withIdValidation(toJson(getIteration)),
+    addIteration: withIdValidation(toJson(addIteration)),
+    updateIteration: withIdValidation(updateIteration),
+    removeIteration: withIdValidation(removeIteration)
 };
 
 module.exports = Program;

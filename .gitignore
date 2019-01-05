@@ -336,3 +336,5 @@ __pycache__/
 
 # End of https://www.gitignore.io/api/aspnetcore
 usersmanagement/package-lock\.json
+
+programs-service/package-lock\.json

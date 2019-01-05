@@ -8,8 +8,10 @@ const filterProgramFull = baseValidator.filterResult(schemas.ProgramFullResponse
 const filterExerciseDefault = baseValidator.filterResult(schemas.ExerciseDefaultSchema);
 const filterExerciseDefaultResponse = baseValidator.filterResult(schemas.ExerciseDefaultResponseSchema);
 
+const filterIterationDefaultResponse = baseValidator.filterResult(schemas.IterationDefaultResponseSchema);
+
 module.exports = function(baseRoute, server) {
-    server.get(`${baseRoute}/`, async function (req, res, next) {
+    server.get(`${baseRoute}`, async function (req, res, next) {
         try {
             const programs = await ProgramsService.list();
             res.json(200, filterProgramDefault(programs));
@@ -30,7 +32,7 @@ module.exports = function(baseRoute, server) {
     });
 
 // TODO: temporarily commented out in order to create full program
-    server.post(`${baseRoute}/`, baseValidator.validate(schemas.ProgramDefaultSchema), async function (req, res, next) {
+    server.post(`${baseRoute}/`, /*baseValidator.validate(schemas.ProgramDefaultSchema),*/ async function (req, res, next) {
         try {
             let program = await ProgramsService.add(req.body);
             res.json(201, filterProgramDefault(program));
@@ -63,7 +65,7 @@ module.exports = function(baseRoute, server) {
     server.del(`${baseRoute}/:id`, async function (req, res, next) {
         try {
             await ProgramsService.remove(req.params.id);
-            res.status(204);
+            res.send(204);
             return next();
         } catch (e) {
             return next(e);
@@ -108,7 +110,7 @@ module.exports = function(baseRoute, server) {
             // TODO: re-order exercises
             // const program = await ProgramsService.addExercise(req.params.id, req.body);
             // res.status(200).json(program);
-            res.status(204);
+            res.send(204);
             return next();
         } catch (e) {
             return next(e);
@@ -128,7 +130,72 @@ module.exports = function(baseRoute, server) {
     server.del(`${baseRoute}/:id/exercises/:exerciseId`, async function (req, res, next) {
         try {
             await ProgramsService.removeExercise(req.params.id, req.params.exerciseId);
-            res.status(204);
+            res.send(204);
+            return next();
+        } catch (e) {
+            return next(e);
+        }
+    });
+
+    //-------------------------------
+
+
+    server.get(`${baseRoute}/:id/exercises/:exerciseId/iterations`, async function (req, res, next) {
+        try {
+            const iterations = await ProgramsService.listIterations(req.params.id, req.params.exerciseId);
+            res.json(200, filterIterationDefaultResponse(iterations));
+            return next();
+        } catch (e) {
+            return next(e);
+        }
+    });
+
+    server.get(`${baseRoute}/:id/exercises/:exerciseId/iterations/:iterationId`, async function (req, res, next) {
+        try {
+            const iteration = await ProgramsService.getIteration(req.params.id, req.params.exerciseId, req.params.iterationId);
+            res.json(200, filterIterationDefaultResponse(iteration));
+            return next();
+        } catch (e) {
+            return next(e);
+        }
+    });
+
+    server.post(`${baseRoute}/:id/exercises/:exerciseId/iterations`, async function (req, res, next) {
+        try {
+            const iteration = await ProgramsService.addIteration(req.params.id, req.params.exerciseId, req.body);
+            res.json(201, filterIterationDefaultResponse(iteration));
+            return next();
+        } catch (e) {
+            return next(e);
+        }
+    });
+
+    server.put(`${baseRoute}/:id/exercises/:exerciseId/iterations`, async function (req, res, next) {
+        try {
+            // TODO: re-order exercises
+            // const program = await ProgramsService.addExercise(req.params.id, req.body);
+            // res.status(200).json(program);
+            res.send(204);
+            return next();
+        } catch (e) {
+            return next(e);
+        }
+    });
+
+    server.put(`${baseRoute}/:id/exercises/:exerciseId/iterations/:iterationId`, async function (req, res, next) {
+        try {
+            const iteration = await ProgramsService.updateIteration(req.params.id, req.params.exerciseId, req.params.iterationId, req.body);
+            res.json(200, filterIterationDefaultResponse(iteration));
+            return next();
+        } catch (e) {
+            return next(e);
+        }
+    });
+
+    server.del(`${baseRoute}/:id/exercises/:exerciseId/iterations/:iterationId`, async function (req, res, next) {
+        try {
+            await ProgramsService.removeIteration(req.params.id, req.params.exerciseId, req.params.iterationId);
+            res.send(204);
             return next();
         } catch (e) {
             return next(e);
